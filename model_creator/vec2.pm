@@ -22,6 +22,11 @@ sub new {
   return bless $obj, $class;
 }
 
+sub copy {
+  my $self = shift;
+  return Vec2->new($self->x, $self->y);
+}
+
 sub x {
   return $_[0]->[0];
 }
@@ -37,6 +42,11 @@ sub add {
     x => $self->x + $b->x,
     y => $self->y + $b->y,
   });
+}
+
+sub str {
+  my $self = shift;
+  return 'Vec2(' . $self->x . ', '. $self->y . ')';
 }
 
 
