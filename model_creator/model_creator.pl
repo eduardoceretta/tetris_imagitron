@@ -16,7 +16,7 @@ use MatrixCel;
 my $VERSION = 1.0;
 
 # . free , | soft block , # hard block
-my $str_img1 = <<"TXT";
+my $str_img = <<"TXT";
 ####.....
 ###......
 ##.......
@@ -24,7 +24,7 @@ my $str_img1 = <<"TXT";
 ###......
 TXT
 
-my $str_img = <<"TXT";
+my $str_img1 = <<"TXT";
 .................................
 .................................
 ....|||||......|||||....|||||....
@@ -243,7 +243,7 @@ sub printMatrix {
 
 sub writeResult {
   my ($matrix, $sorted_list, $seed) = @_;
-  print "// TetrisImagitron: " . $VERSION, "\n";
+  print "TetrisImagitron " . $VERSION, "\n";
   print "// Seed: ", $seed, "\n";
   print "// Automatically generated on ", strftime ("%Y-%m-%d %H:%M:%S (%Z)", localtime), "\n";
   print "//", "\n";
