@@ -1,0 +1,21 @@
+# Except
+!.gitignore
+# ignore everything in this directory
+*.ncb
+*.user
+*.exe
+*.manifest
+*.res
+*.ilk
+*.obj
+*.htm
+*.dep
+*.pdb
+*.idb
+*.lib
+*.dll
+*.swp
+/resources/*
+!/ext/**
+!/resources/Scenes
+!/resources/Scenes/*
