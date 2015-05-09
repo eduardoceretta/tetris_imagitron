@@ -64,7 +64,7 @@ my $piece_data = [
   },
   {
     type => "L",
-    angle => 90,
+    angle => -90,
     matrix =>   "....\n"
               . "....\n"
               . "..#.\n"
@@ -80,7 +80,7 @@ my $piece_data = [
   },
   {
     type => "L",
-    angle => -90,
+    angle => 90,
     matrix =>   "....\n"
               . "....\n"
               . "###.\n"
