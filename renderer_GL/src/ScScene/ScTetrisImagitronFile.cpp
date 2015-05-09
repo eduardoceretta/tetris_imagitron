@@ -117,9 +117,11 @@ void ScTetrisImagitronFile :: render()
       vector<TetrisPiece> :: iterator it;
       for (it = m_pieces.begin(); it != m_pieces.end(); ++it) {
         Vector3 p_pos = it->getPosition();
+        Color p_color = it->getColor();
         glPushMatrix();
         glTranslatef(p_pos.x, p_pos.y, p_pos.z);
         glRotatef(it->getRotation(), 0,0,-1);
+        glColor3f(p_color.r,p_color.g,p_color.b);
         it->getVbo()->render();
         glPopMatrix();
       }

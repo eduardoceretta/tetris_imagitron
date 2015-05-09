@@ -9,6 +9,7 @@
 #define _TETRISPIECE_H_
 
 #include "MathUtils/Vector3.h"
+#include "MathUtils/Color.h"
 #include <map>
 #include <utility>
 
@@ -26,6 +27,7 @@ class TetrisPiece
   
   float m_rotAngle;
   Vector3 m_pos;
+  Color m_color;
 
   GLVertexBufferObject *m_vbo;
   
@@ -47,9 +49,10 @@ public:
   void setBlock(const Vector3 v, const unsigned int i);
 
   /**
-   * Get Transformation
+   * Get properties
    */
   Vector3 getPosition() const;
+  Color getColor() const;
   float getRotation() const;
 
    /**
