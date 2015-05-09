@@ -17,7 +17,6 @@
 #include "MeshLoaders\UmMeshFile.h"
 #include "MeshLoaders\PlyMeshFile.h"
 #include "MeshLoaders\AssimpMeshFile.h"
-#include "MeshLoaders\TetrisImagitronFile.h"
 
 using namespace std;
 /**
@@ -29,7 +28,6 @@ MeshFileBase* MeshLoader :: s_meshLoaders[] =
   new UmMeshFile(),
   new MsbMeshFile(),
   new PlyMeshFile(),
-  new TetrisImagitronFile(),
   new AssimpMeshFile()
 };
 

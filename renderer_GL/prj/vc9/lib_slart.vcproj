@@ -427,11 +427,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\MeshLoaders\TetrisImagitronFile.cpp"
+				RelativePath="..\..\src\MeshLoaders\TetrisPiece.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\MeshLoaders\TetrisImagitronFile.h"
+				RelativePath="..\..\src\MeshLoaders\TetrisPiece.h"
 				>
 			</File>
 			<File
@@ -494,6 +494,14 @@
 				RelativePath="..\..\src\ScScene\ScScene.h"
 				>
 			</File>
+			<File
+				RelativePath="..\..\src\ScScene\ScTetrisImagitronFile.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\ScScene\ScTetrisImagitronFile.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Handlers"
@@ -512,18 +520,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\Handlers\SphereGLCameraHandler.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="TetrisImagitron"
-			>
-			<File
-				RelativePath="..\..\src\TetrisImagitron\TetrisPiece.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\TetrisImagitron\TetrisPiece.h"
 				>
 			</File>
 		</Filter>

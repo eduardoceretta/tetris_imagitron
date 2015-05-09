@@ -20,13 +20,13 @@ LIGHT  400 100 10   1 1 1   0 0 0
 
 //MESH materialIndex (pos)x y z (scale)x y z  path
 
+// MESH 1  0 0 0  1 1 1 resources\Models\TetrisImagitron\piece_O.obj
 ////////////////////////TIA TIA TIA TIA//////////////////////////
-MESH 1  0 0 0  1 1 1 resources/Models/TetrisImagitron/kine.tia
+TETRISFILE  0 0 0  1 1 1 resources/Models/TetrisImagitron/kine.tia
 
 ////////////////////////UM UM UM UM//////////////////////////
 ////////////////////////UM UM UM UM//////////////////////////
 ////////////////////////UM UM UM UM//////////////////////////
-//MESH 1  0.324326 -0.267604 0.406447  0.00689655172 0.00689655172 0.00689655172 resources/Models/MSH/cavalo.um
  //MESH 3  0 0 0  .086 .086 .086 resources/Models/MSH/beethoven.um
  //MESH 1  0 0 0  1 1 1 resources/Models/MSH/cow.um
  //MESH 1  0 0 0  1 1 1 resources/Models/MSH/heptoroid.um

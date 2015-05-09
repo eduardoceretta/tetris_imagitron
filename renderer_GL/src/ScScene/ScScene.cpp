@@ -34,6 +34,9 @@ ScScene :: ~ScScene()
   vector<ScAnimMesh*> :: reverse_iterator it;
   for(it = m_animMeshes.rbegin(); it != m_animMeshes.rend(); ++it)
     delete *it;
+  vector<ScTetrisImagitronFile*> :: reverse_iterator it_t;
+  for(it_t = m_tetrisFiles.rbegin(); it_t != m_tetrisFiles.rend(); ++it_t)
+    delete *it_t;
 }
 
 void ScScene :: readFromStr(char buffer[])
@@ -80,6 +83,12 @@ void ScScene :: configure()
       m_materials[(*animMeshIt)->getMaterialIndex()].configure();
     (*animMeshIt)->configure();
   }
+
+  vector<ScTetrisImagitronFile*> :: iterator tetrisMeshIt;
+  for( tetrisMeshIt = m_tetrisFiles.begin(); tetrisMeshIt!=m_tetrisFiles.end(); ++tetrisMeshIt)
+  {
+    (*tetrisMeshIt)->configure();
+  }
 }
 
 
@@ -110,6 +119,12 @@ void ScScene :: render()
           m_materials[(*animMeshIt)->getMaterialIndex()].render();
           (*animMeshIt)->render();
       glPopAttrib();
+    }
+
+    vector<ScTetrisImagitronFile*> :: iterator tetrisMeshIt;
+    for( tetrisMeshIt = m_tetrisFiles.begin(); tetrisMeshIt!=m_tetrisFiles.end(); ++tetrisMeshIt)
+    {
+      (*tetrisMeshIt)->render();
     }
   glPopAttrib();
 
@@ -284,6 +299,16 @@ Vector3 ScScene::getSceneBoundingBoxMin() const
     bb_min.z = min(mesh.z, bb_min.z);
   }
 
+  vector<ScTetrisImagitronFile*> :: const_iterator tetrisMeshIt;
+  for( tetrisMeshIt = m_tetrisFiles.begin(); tetrisMeshIt!=m_tetrisFiles.end(); ++tetrisMeshIt)
+  {
+    Vector3 mesh = (*tetrisMeshIt)->getBoundingBoxMin();
+    bb_min.x = min(mesh.x, bb_min.x);
+    bb_min.y = min(mesh.y, bb_min.y);
+    bb_min.z = min(mesh.z, bb_min.z);
+
+  }
+
   return bb_min;
 }
 
@@ -306,6 +331,16 @@ Vector3 ScScene::getSceneBoundingBoxMax() const
     bb_max.x = max(mesh.x, bb_max.x);
     bb_max.y = max(mesh.y, bb_max.y);
     bb_max.z = max(mesh.z, bb_max.z);
+  }
+
+  vector<ScTetrisImagitronFile*> :: const_iterator tetrisMeshIt;
+  for( tetrisMeshIt = m_tetrisFiles.begin(); tetrisMeshIt!=m_tetrisFiles.end(); ++tetrisMeshIt)
+  {
+    Vector3 mesh = (*tetrisMeshIt)->getBoundingBoxMax();
+    bb_max.x = max(mesh.x, bb_max.x);
+    bb_max.y = max(mesh.y, bb_max.y);
+    bb_max.z = max(mesh.z, bb_max.z);
+
   }
   return bb_max;
 }
@@ -370,6 +405,7 @@ void ScScene::readSceneObjects( string rt4FileName )
   int numMaterials = 0;
   int numMeshes = 0;
   int numAnimMeshes = 0;
+  int numTetrisFiles = 0;
   int numLights = 0;
 
   while(!feof(file))
@@ -430,6 +466,14 @@ void ScScene::readSceneObjects( string rt4FileName )
       m->readFromStr(buffer);
       m->configure();
       m_animMeshes.push_back(m);
+    }else if(!strcmp(buffer, "TETRISFILE"))
+    {
+      numTetrisFiles++;
+      fscanf(file, "%[^\n]s", buffer);
+      ScTetrisImagitronFile *m = new ScTetrisImagitronFile();
+      m->readFromStr(buffer);
+      m->configure();
+      m_tetrisFiles.push_back(m);
     }else
     {
       fscanf(file, "%*[^\n]s");
@@ -458,3 +502,7 @@ unsigned int ScScene::getNumElements() const
   return m_numElements;
 }
 
+int ScScene::getNumTetrisImagitronFiles()
+{
+  return m_tetrisFiles.size();
+}

@@ -60,6 +60,14 @@ GLFrameBufferObject::GLFrameBufferObject(int width, int height)
 {
    m_supported = true;
 
+   GLenum err = glewInit();
+   if (GLEW_OK != err)
+   {
+     m_supported = false;
+     fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
+   }
+
+
    if(!(glGenFramebuffersEXT && glDeleteFramebuffersEXT && glBindFramebufferEXT && glCheckFramebufferStatusEXT &&
       glGetFramebufferAttachmentParameterivEXT && glGenerateMipmapEXT && glFramebufferTexture2DEXT &&
       glFramebufferRenderbufferEXT && glGenRenderbuffersEXT && glDeleteRenderbuffersEXT &&

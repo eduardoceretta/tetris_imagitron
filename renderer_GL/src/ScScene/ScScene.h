@@ -19,6 +19,7 @@
 #include "ScScene/ScMesh.h"
 #include "ScScene/ScMaterial.h"
 #include "ScScene/ScAnimMesh.h"
+#include "ScScene/ScTetrisImagitronFile.h"
 
 using namespace std;
 
@@ -72,6 +73,7 @@ protected:
    */
   vector<ScMesh> m_meshes;
   vector<ScAnimMesh*> m_animMeshes;
+  vector<ScTetrisImagitronFile*> m_tetrisFiles;
 
   /**
    * Scene's Multiple Cameras
@@ -142,6 +144,11 @@ public:
    */
   ScMesh* getMeshAt(int i);
 
+  /**
+   * Get the number of Tetris Imagitrion Files
+   */
+  int getNumTetrisImagitronFiles();
+  
   /**
    * Get the number of imported animated meshes
    */

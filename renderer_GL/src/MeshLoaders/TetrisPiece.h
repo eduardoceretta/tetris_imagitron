@@ -12,42 +12,72 @@
 #include <map>
 #include <utility>
 
+class MeshFileBase;
+class GLVertexBufferObject;
+
 class TetrisPiece
 {
   enum PieceType {T, I, S, Z, L, J, O};
   static std::map<unsigned int, std::pair<PieceType, float> > s_hashmap;
+  static std::map<PieceType, GLVertexBufferObject* > s_pieceVbomap;
   
   PieceType m_type;
   Vector3 m_blocks[4];
-  float m_rot_angle;
+  
+  float m_rotAngle;
+  Vector3 m_pos;
 
-  bool m_processed;
+  GLVertexBufferObject *m_vbo;
+  
+  bool m_outdated;
 public:
    /**
    * Simple Constructor
    */
   TetrisPiece();
+
+  /**
+   * Set pieces models path
+   */ 
+  void setModelPath(std::string model_path);
    
   /**
    * Set block
    */
   void setBlock(const Vector3 v, const unsigned int i);
+
+  /**
+   * Get Transformation
+   */
+  Vector3 getPosition() const;
+  float getRotation() const;
+
+   /**
+   * Get the VBO of the model
+   *  If the VBO is outdated calculates it.
+   */
+  GLVertexBufferObject* getVbo() const;
   
 //protected:
     
   /**
    * Process Piece Type and Rotation
    */
- void process();
+ void configure();
 
 private:
+  /**
+   * Calculate piece center based on blocks
+   */ 
+  Vector3 calcCenter();
+
   /**
    * Get a matrix 4x4 with true on occupied spaces
    */
   const bool** getOriginMatrix() const;
     
   /**
-   * Get a hash of the piece matrix
+   * Get a hash of the piece matrix. Each space in the matrix maps to a specific power of 2
    */
   unsigned int getHash(const bool** m) const;
 
@@ -55,6 +85,11 @@ private:
    * Create a static map that will map a hash to a type and rotation
    */ 
   static void createHashMap();
+  
+  /**
+   * Create a static map that will map a piece type to a Mesh
+   */ 
+  static void createPieceVboMap(std::string model_path);
 };
 
 #endif

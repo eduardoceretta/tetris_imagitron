@@ -594,7 +594,7 @@ void App::loadScene()
     m_rtScene = new ScScene();
   m_rtScene->readSceneObjects(m_scenePath);
 
-  int numMeshes = m_rtScene->getNumMeshes() + m_rtScene->getNumAnimatedMeshes();
+  int numMeshes = m_rtScene->getNumMeshes() + m_rtScene->getNumAnimatedMeshes() + m_rtScene->getNumTetrisImagitronFiles();
   if(numMeshes == 0)
     cout << "No Mesh Loaded!!" <<endl;
 
@@ -621,7 +621,7 @@ void App::loadCameras()
 
   m_fov = m_rtScene->getCamera()->getFovy();
 
-  SphereGLCameraHandler *cam3D = new SphereGLCameraHandler(10.f, 0.f, 90.0f, 2.0f);
+  SphereGLCameraHandler *cam3D = new SphereGLCameraHandler(10.f, 0.f, 0.0f, 2.0f);
   cam3D->setViewBoundingBox(m_rtScene->getSceneBoundingBoxMin(), m_rtScene->getSceneBoundingBoxMax(),  m_fov);
   
   m_kernelsCamHandleres.push_back(cam3D); //NoShader
