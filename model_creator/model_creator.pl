@@ -244,6 +244,7 @@ sub printMatrix {
 sub writeResult {
   my ($matrix, $sorted_list, $seed) = @_;
   print "TetrisImagitron " . $VERSION, "\n";
+  print "MODEL_PATH resources/Models/TetrisImagitron/", "\n";
   print "// Seed: ", $seed, "\n";
   print "// Automatically generated on ", strftime ("%Y-%m-%d %H:%M:%S (%Z)", localtime), "\n";
   print "//", "\n";
