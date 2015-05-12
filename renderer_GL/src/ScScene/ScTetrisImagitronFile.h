@@ -13,6 +13,7 @@
 #include <string>
 
 #include "MeshLoaders/TetrisPiece.h"
+#include "Objects/Frames.h"
 
 using namespace std;
 
@@ -27,6 +28,13 @@ class ScTetrisImagitronFile
   Vector3 m_speedVBoost;
 
   int m_currentPieceIndex;
+
+  Frames m_frames;
+
+  Vector3 m_piecePos;
+  Vector3 m_pieceDiscretePos;
+  Vector3 m_pieceDiscreteFinalPos;
+  float m_pieceAngle;
 
   bool m_outdated;
 
@@ -51,6 +59,9 @@ public:
   Vector3 getBoundingBoxCenter() const;
   Vector3 getBoundingBoxMin() const;
   Vector3 getBoundingBoxMax() const;
+
+  Vector3 getSpeedV() const;
+  void setSpeedV(Vector3 val);
   
   /**
    * Update Animation Attributes
@@ -69,5 +80,11 @@ protected:
    */
   void readFile(string fileName);
 
+  /**
+   * Aux Renders
+   */ 
+  void renderGrid() const;
+  void renderPieceFinalPos(int i) const;
+  void renderMovingPiecePos(int i) const;
 };
 

@@ -506,3 +506,8 @@ int ScScene::getNumTetrisImagitronFiles()
 {
   return m_tetrisFiles.size();
 }
+
+ScTetrisImagitronFile* ScScene::getTetrisImagitronFileAt(int i)
+{
+  return m_tetrisFiles.at(i);
+}

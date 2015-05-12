@@ -221,8 +221,8 @@ void App::listenReshape( int w, int h )
   PgDown:
   PgUp:
   *: Reset Camera Initial Position
-  +:
-  -:
+  +: Speed +
+  -: Speed -
   0:
   1:
   2:
@@ -362,11 +362,37 @@ void App::listenKeyboard( int key )
     break;
 
   case '=':
+    for(int i = 0; i < m_rtScene->getNumTetrisImagitronFiles(); ++i)
+    {
+      ScTetrisImagitronFile *f = m_rtScene->getTetrisImagitronFileAt(i);
+      Vector3 s = f->getSpeedV()*2.0;
+      f->setSpeedV(s);
+    }
+    break;
   case '+':
+    for(int i = 0; i < m_rtScene->getNumTetrisImagitronFiles(); ++i)
+    {
+      ScTetrisImagitronFile *f = m_rtScene->getTetrisImagitronFileAt(i);
+      Vector3 s = f->getSpeedV()*1.1;
+      f->setSpeedV(s);
+    }
     break;
 
   case '_':
+    for(int i = 0; i < m_rtScene->getNumTetrisImagitronFiles(); ++i)
+    {
+      ScTetrisImagitronFile *f = m_rtScene->getTetrisImagitronFileAt(i);
+      Vector3 s = f->getSpeedV()*0.5;
+      f->setSpeedV(s);
+    }
+    break;
   case '-':
+    for(int i = 0; i < m_rtScene->getNumTetrisImagitronFiles(); ++i)
+    {
+      ScTetrisImagitronFile *f = m_rtScene->getTetrisImagitronFileAt(i);
+      Vector3 s = f->getSpeedV()*0.95;
+      f->setSpeedV(s);
+    }
     break;
 
   case '*':

@@ -22,7 +22,8 @@ LIGHT  400 100 10   1 1 1   0 0 0
 
 // MESH 1  0 0 0  1 1 1 resources\Models\TetrisImagitron\piece_O.obj
 ////////////////////////TIA TIA TIA TIA//////////////////////////
-TETRISFILE  0 0 0  1 1 1 resources/Models/TetrisImagitron/kine.tia
+// TETRISFILE  0 0 0  1 1 1 resources/Models/TetrisImagitron/kine.tia
+TETRISFILE  0 0 0  1 1 1 resources/Models/TetrisImagitron/kine2.tia
 
 ////////////////////////UM UM UM UM//////////////////////////
 ////////////////////////UM UM UM UM//////////////////////////

@@ -28,6 +28,7 @@ class TetrisPiece
   float m_rotAngle;
   Vector3 m_pos;
   Color m_color;
+  Vector3 m_localDiscreteCenter;
 
   GLVertexBufferObject *m_vbo;
   
@@ -55,11 +56,24 @@ public:
   Color getColor() const;
   float getRotation() const;
 
+  /**
+   * Return the center of a piece closest to the center of the BB
+   */
+  Vector3 getLocalDiscreteCenter() const;
+
    /**
    * Get the VBO of the model
    *  If the VBO is outdated calculates it.
    */
   GLVertexBufferObject* getVbo() const;
+
+  /**
+   * Get Bounding Box info
+   */
+  Vector3 getBoundingBoxSize() const;
+  Vector3 getBoundingBoxCenter() const;
+  Vector3 getBoundingBoxMin() const;
+  Vector3 getBoundingBoxMax() const;
   
 //protected:
     
@@ -70,9 +84,10 @@ public:
 
 private:
   /**
-   * Calculate piece center based on blocks
+   * Calculate piece Discrete Center in local coordinates
    */ 
-  Vector3 calcCenter();
+  Vector3 calcLocalDiscreteCenter();
+
 
   /**
    * Get a matrix 4x4 with true on occupied spaces

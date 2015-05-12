@@ -150,6 +150,11 @@ public:
   int getNumTetrisImagitronFiles();
   
   /**
+   * Get the ith animated mesh imported
+   */
+  ScTetrisImagitronFile* getTetrisImagitronFileAt(int i);
+
+  /**
    * Get the number of imported animated meshes
    */
   int getNumAnimatedMeshes();

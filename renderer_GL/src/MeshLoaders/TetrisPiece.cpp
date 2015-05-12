@@ -52,19 +52,19 @@ void TetrisPiece::configure()
   const bool **m = getOriginMatrix();
   unsigned int hash = getHash(m);
 
-  m_pos = calcCenter();
-  m_color = Color(float(rand()%1000)/1000,float(rand()%1000)/1000,float(rand()%1000)/1000);
-
   m_type = s_hashmap[hash].first;
   m_rotAngle = s_hashmap[hash].second;
+  
+  m_vbo = s_pieceVbomap[m_type];
 
-  m_vbo = s_pieceVbomap[m_type];;
+  m_pos = getBoundingBoxCenter();
+  m_localDiscreteCenter = calcLocalDiscreteCenter();
+  m_color = Color(float(rand()%1000)/1000,float(rand()%1000)/1000,float(rand()%1000)/1000);
 
   std::cout << "Position: " << m_pos << " Type: " << m_type << " RotAngle: " << m_rotAngle << endl;
   for (int i = 0; i < 4; ++i) {
     std::cout << i << ") " << m_blocks[i];
   }
-
 
   m_outdated = false;
 }
@@ -121,6 +121,12 @@ float TetrisPiece::getRotation() const
   return m_rotAngle;
 }
 
+
+Vector3 TetrisPiece::getLocalDiscreteCenter() const
+{
+  return m_localDiscreteCenter;
+}
+
 GLVertexBufferObject* TetrisPiece::getVbo() const
 {
   if(m_vbo)
@@ -128,21 +134,48 @@ GLVertexBufferObject* TetrisPiece::getVbo() const
   return NULL;
 }
 
-Vector3 TetrisPiece::calcCenter()
+
+Vector3 TetrisPiece::getBoundingBoxMin() const
 {
   Vector3 min_p = m_blocks[0];
-  Vector3 max_p = m_blocks[0];
   for (int i = 0; i < 4; ++i) {
     min_p.x = std::min(m_blocks[i].x, min_p.x);
     min_p.y = std::min(m_blocks[i].y, min_p.y);
+  }
+  min_p.z = 0.0f;
+  return  min_p;
+}
 
+Vector3 TetrisPiece::getBoundingBoxMax() const
+{
+  Vector3 max_p = m_blocks[0];
+  for (int i = 0; i < 4; ++i) {
     max_p.x = std::max(m_blocks[i].x+1, max_p.x);
     max_p.y = std::max(m_blocks[i].y+1, max_p.y);
   }
+  max_p.z = 0.0f;
+  return  max_p;
+}
 
-  min_p.z = 0;
-  max_p.z = 0;
-  return (min_p + max_p)*.5;
+Vector3 TetrisPiece::getBoundingBoxSize() const
+{
+  Vector3 bb_max = getBoundingBoxMax();
+  Vector3 bb_min = getBoundingBoxMin();
+  return bb_max - bb_min;
+}
+
+Vector3 TetrisPiece::getBoundingBoxCenter() const
+{
+  Vector3 bb_max = getBoundingBoxMax();
+  Vector3 bb_min = getBoundingBoxMin();
+  return (bb_max + bb_min)*.5;
+}
+
+
+Vector3 TetrisPiece::calcLocalDiscreteCenter()
+{ 
+  Vector3 size = getVbo()->getBoundingBoxSize();
+  return Vector3((!((int)size.x%2)) * 0.5f,(!((int)size.y%2)) * 0.5f, 0.0f);
 }
 
 
