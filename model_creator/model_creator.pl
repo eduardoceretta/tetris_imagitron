@@ -16,7 +16,40 @@ use MatrixCel;
 my $VERSION = 1.0;
 
 # . free , | soft block , # hard block
-my $str_img = <<"TXT";
+my $str_imgT = <<"TXT";
+#.###.##...##.###
+...#..###.###..##
+#####.#######.###
+#################
+TXT
+
+my $str_imgS = <<"TXT";
+..###.###
+#..#..###
+####.####
+#########
+TXT
+
+
+
+my $str_imgJ = <<"TXT";
+..#...#.#
+#.#.###.#
+#.###.#..
+###...###
+#########
+TXT
+
+my $str_imgL = <<"TXT";
+..#.###.
+.##...#.
+.#####..
+#...####
+###.####
+TXT
+
+
+my $str_img0 = <<"TXT";
 ####.....
 ###......
 ##.......
@@ -24,7 +57,7 @@ my $str_img = <<"TXT";
 ###......
 TXT
 
-my $str_img1 = <<"TXT";
+my $str_img = <<"TXT";
 .................................
 .................................
 ....|||||......|||||....|||||....
@@ -102,12 +135,13 @@ sub traverse {
 
   # If the piece is complete add the piece to the matrix and end the traverse
   if ($piece->size() >= 4) {
-     $matrix->addPiece($piece);
+    $matrix->addPiece($piece);
     return $piece;
   }
 
   # Iterate through the positions in the piece
   my @shuffled_array = shuffle @{$piece->array};
+
   for my $pos (@shuffled_array) {
     # Get the free cells around the piece
     my @neighbors = shuffle @{$matrix->getFreeNeighbors($pos)};
@@ -115,8 +149,13 @@ sub traverse {
       for my $n (@neighbors) {
         # Traverse in a free piece
         my $ret = traverse($matrix, $piece, $n);
-        # If traverse succeed go back
-        return $ret if defined $ret;
+
+        if (!defined $ret) {
+          # Can't build a 4 piece, soft block the cell to avoid retries
+          $matrix->set($p, 'softblock');
+        }
+
+        return $ret;
       }
     }
   }
@@ -249,8 +288,15 @@ sub writeResult {
   print "// Automatically generated on ", strftime ("%Y-%m-%d %H:%M:%S (%Z)", localtime), "\n";
   print "//", "\n";
   print "\n";
+
+  my $matrix_str = $matrix->str();
+  $matrix_str =~ s!\n!\n// !g;
+  print "// ", $matrix_str, "\n";
+  print "\n";
+
   print "// Pieces (sorted for animation)", "\n";
   print "//   PIECE PART0_X PART0_Y PART1_X PART1_Y PART2_X PART2_Y PART3_X PART3_Y", "\n";
+
 
   for my $piece (@{$sorted_list}) {
     print 'PIECE ' . (sprintf "     %5d %5d"x4,  map {($_->x,$_->y)} @{$piece->array}), "\n";
