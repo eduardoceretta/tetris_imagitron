@@ -177,17 +177,17 @@ void 	 Vector3 :: rotate(const double ang,Axis ax)
   switch(ax)
   {
     case X:
-      yy = y*c - z*s;
+      yy = y*c + z*s;
       z = -y*s + z*c;
       y=yy;
     break;
     case Y:
       xx = x*c - z*s;
-      z = -x*s + z*c;
+      z = x*s + z*c;
       x = xx;
     break;
     case Z:
-      xx = x*c - y*s;
+      xx = x*c + y*s;
       y = -x*s + y*c;
       x = xx;
     break;
@@ -204,15 +204,15 @@ void 	 Vector3 :: rotateAxis(const double angle,Vector3 ax)
 
   tmpX = x*(e.x*e.x + (1-e.x*e.x)*c)
        +y*(e.x*e.y*(1-c) - e.z*s)
-       +z*(e.x*e.z*(1-c) - e.y*s);
+       +z*(e.x*e.z*(1-c) + e.y*s);
 
-  tmpY = x*(e.x*e.y*(1-c) - e.z*s)
+  tmpY = x*(e.x*e.y*(1-c) + e.z*s)
        +y*(e.y*e.y + (1-e.y*e.y)*c)
        +z*(e.y*e.z*(1-c) - e.x*s);
 
 
   tmpZ = x*(e.x*e.z*(1-c) - e.y*s)
-       +y*(e.y*e.z*(1-c) - e.x*s)
+       +y*(e.y*e.z*(1-c) + e.x*s)
        +z*(e.z*e.z + (1-e.z*e.z)*c);
 
   x = tmpX;
