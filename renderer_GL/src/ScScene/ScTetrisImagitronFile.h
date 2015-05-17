@@ -34,7 +34,8 @@ class ScTetrisImagitronFile
   Vector3 m_piecePos;
   Vector3 m_pieceDiscretePos;
   Vector3 m_pieceDiscreteFinalPos;
-  float m_pieceAngle;
+  int m_pieceNumRotations;
+  float m_pieceLastRotationTime;
 
   bool m_outdated;
 

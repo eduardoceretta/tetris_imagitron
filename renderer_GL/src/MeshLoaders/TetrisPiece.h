@@ -18,11 +18,15 @@ class GLVertexBufferObject;
 
 class TetrisPiece
 {
+public:
   enum PieceType {T, I, S, Z, L, J, O};
+
+private:
   static std::map<unsigned int, std::pair<PieceType, float> > s_hashmap;
   static std::map<PieceType, GLVertexBufferObject* > s_pieceVbomap;
   
   PieceType m_type;
+  
   Vector3 m_blocks[4];
   
   float m_rotAngle;
@@ -55,6 +59,7 @@ public:
   Vector3 getPosition() const;
   Color getColor() const;
   float getRotation() const;
+  TetrisPiece::PieceType getType() const;
 
   /**
    * Return the center of a piece closest to the center of the BB

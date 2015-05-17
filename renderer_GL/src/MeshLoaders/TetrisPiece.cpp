@@ -233,3 +233,8 @@ void TetrisPiece::createPieceVboMap(string model_path)
   mesh_o->readFile(model_path + "piece_O.obj");
   s_pieceVbomap[PieceType::O] = mesh_o->getVbo();
 }
+
+TetrisPiece::PieceType TetrisPiece::getType() const
+{
+  return m_type;
+}

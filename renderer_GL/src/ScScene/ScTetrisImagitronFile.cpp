@@ -10,13 +10,21 @@
 #include "ScScene/SCTetrisImagitronFile.h"
 #include <string>
 #include <limits>
+#include <cmath>
 #include "defines.h"
 #include "GLUtils/GLVertexBufferObject.h"
+
+#define MAX_ROTATIONS 8
+#define INIT_Y 35.5f
+#define ROTATION_Y_THRESHOLD 6.0f
+#define POSITION_Y_BOOST_THRESHOLD 5.0f
 
 ScTetrisImagitronFile::ScTetrisImagitronFile()
 :m_outdated(true)
 ,m_currentPieceIndex(-1)
-,m_pieceAngle(0.0f)
+,m_pieceNumRotations(0)
+,m_pieceLastRotationTime(0.0f)
+,m_speedH(10.0f, 0.0f, 0.0f)
 ,m_speedV(0.0, -50.5, 0.0)
 ,m_speedVBoost(0.0, -100.5, 0.0)
 ,m_pieceDiscretePos(0, 0, 0)
@@ -112,6 +120,7 @@ void ScTetrisImagitronFile :: configure()
   
   m_pieceDiscretePos = Vector3(floor(m_piecePos.x), floor(m_piecePos.y), floor(m_piecePos.z)) + Vector3(0.5f, 0.5f, 0.0f);
   float y_dist = m_pieceDiscretePos.y - m_pieceDiscreteFinalPos.y;
+  float x_dist = m_pieceDiscretePos.x - m_pieceDiscreteFinalPos.x;
   if(y_dist < 1) {
     //// LOOP REVIEW
     m_currentPieceIndex = (m_currentPieceIndex + 1)%m_pieces.size();
@@ -124,14 +133,39 @@ void ScTetrisImagitronFile :: configure()
       Vector3 rotated = p_local_center;
       rotated.rotateAxis(p.getRotation(), Vector3(0,0,-1));
       m_pieceDiscreteFinalPos = p_pos + rotated;
-      m_piecePos = Vector3(m_pieceDiscreteFinalPos.x, 40.5f, 0.0f);
+      
+      
+      m_piecePos = Vector3(getBoundingBoxCenter().x, INIT_Y, 0.0f);
       m_pieceDiscretePos = Vector3(floor(m_piecePos.x), floor(m_piecePos.y), floor(m_piecePos.z)) + Vector3(0.5f, 0.5f, 0.0f);
+
+      if (p.getType() != TetrisPiece::PieceType::O) {
+        m_pieceNumRotations = rand()%MAX_ROTATIONS;
+      } else {
+        m_pieceNumRotations = 0;
+      }
     }
   } else {
-    if(y_dist < 5)
+    if(y_dist < POSITION_Y_BOOST_THRESHOLD)
       m_piecePos += m_speedVBoost*m_frames.getTimeSinceLastFrame();
     else
       m_piecePos += m_speedV*m_frames.getTimeSinceLastFrame();
+    
+    // Rotation
+    if (m_pieceNumRotations > 0) {
+      m_pieceLastRotationTime += m_frames.getTimeSinceLastFrame();
+      float rotProbabityTimeFactor = (3.0f - m_pieceLastRotationTime*abs(~m_speedV)/5)*((float)m_pieceNumRotations/MAX_ROTATIONS);
+      float rotProbabilityDistFactor = max(m_pieceDiscretePos.y - (m_pieceDiscreteFinalPos.y + ROTATION_Y_THRESHOLD), 0.0f) / (INIT_Y - (m_pieceDiscreteFinalPos.y + ROTATION_Y_THRESHOLD));
+      if (rand()%100 >= 99.999999 * rotProbabilityDistFactor*rotProbabityTimeFactor){
+        m_pieceNumRotations = m_pieceNumRotations - 1;
+        m_pieceLastRotationTime = 0.0f;
+      }
+    }
+
+    //Lateral Movement
+    if(abs(x_dist) > 0.0f) {
+      float distFactor = 10.0f*abs(x_dist / (getBoundingBoxCenter().x - m_pieceDiscreteFinalPos.x));
+      m_piecePos +=  m_speedH * distFactor * (x_dist/abs(x_dist))* -1.0f * m_frames.getTimeSinceLastFrame();
+    }
   }
 
   vector<TetrisPiece> :: iterator it;
@@ -150,7 +184,7 @@ void ScTetrisImagitronFile :: render()
       if(m_currentPieceIndex < m_pieces.size())
         renderMovingPiecePos(m_currentPieceIndex);
       
-      renderGrid();
+      //renderGrid();
     glPopMatrix();
 }
 
@@ -164,6 +198,7 @@ void ScTetrisImagitronFile::renderMovingPiecePos(int i) const
   glColor3f(p_color.r,p_color.g,p_color.b);
   glPushMatrix();
     glTranslatef(m_pieceDiscretePos.x, m_pieceDiscretePos.y, m_pieceDiscretePos.z);
+    glRotatef(90 * m_pieceNumRotations, 0,0,-1);
     glRotatef(p.getRotation(), 0,0,-1);
     glTranslatef(-p_local_center.x, -p_local_center.y, -p_local_center.z);
     p.getVbo()->render();
