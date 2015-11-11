@@ -85,7 +85,7 @@ void ScTetrisImagitronFile::readFile(string fileName)
       fscanf(file, "%[^\n]s", buffer);
       model_path = string(buffer);
     } else if(!strcmp(buffer, "PIECE")) {
-      //   PIECE PART0_X PART0_Y PART1_X PART1_Y PART2_X PART2_Y PART3_X PART3_Y
+      //   PIECE PART0_X PART0_Y PART1_X PART1_Y PART2_X PART2_Y PART3_X PART3_Y COLOR_R COLOR_G COLOR_B
       TetrisPiece p;
       p.setModelPath(model_path);
       for (int i = 0; i < 4; ++i){
@@ -93,6 +93,10 @@ void ScTetrisImagitronFile::readFile(string fileName)
         fscanf(file, "%f %f ", &(v.x), &(v.y));
         p.setBlock(v, i);
       }
+      Color c;
+      fscanf(file, "%f %f %f", &(c.r), &(c.g), &(c.b));
+      p.setColor(c);
+
       p.configure();
       m_pieces.push_back(p);
     } else if(!strcmp(buffer, "BLOCK") || !strcmp(buffer, "SOFTBLOCK") || !strcmp(buffer, "FREE")) {
@@ -136,7 +140,7 @@ void ScTetrisImagitronFile :: configure()
       m_pieceDiscreteFinalPos = p_pos + rotated;
       
       
-      m_piecePos = Vector3(getBoundingBoxCenter().x, INIT_Y, 0.0f);
+      m_piecePos = Vector3(getBoundingBoxCenter().x, getBoundingBoxCenter().y + getBoundingBoxMax().y/2, 0.0f);
       m_pieceDiscretePos = Vector3(floor(m_piecePos.x), floor(m_piecePos.y), floor(m_piecePos.z)) + Vector3(0.5f, 0.5f, 0.0f);
 
       if (p.getType() != TetrisPiece::PieceType::O) {
@@ -155,7 +159,7 @@ void ScTetrisImagitronFile :: configure()
     if (m_pieceNumRotations > 0) {
       m_pieceLastRotationTime += m_frames.getTimeSinceLastFrame();
       float rotProbabityTimeFactor = (3.0f - m_pieceLastRotationTime*abs(~m_speedV)/5)*((float)m_pieceNumRotations/MAX_ROTATIONS);
-      float rotProbabilityDistFactor = max(m_pieceDiscretePos.y - (m_pieceDiscreteFinalPos.y + ROTATION_Y_THRESHOLD), 0.0f) / (INIT_Y - (m_pieceDiscreteFinalPos.y + ROTATION_Y_THRESHOLD));
+      float rotProbabilityDistFactor = max(m_pieceDiscretePos.y - (m_pieceDiscreteFinalPos.y + ROTATION_Y_THRESHOLD), 0.0f) / ((getBoundingBoxMax().y/2) - (m_pieceDiscreteFinalPos.y + ROTATION_Y_THRESHOLD));
       if (rand()%100 >= 99.999999 * rotProbabilityDistFactor*rotProbabityTimeFactor){
         m_pieceNumRotations = m_pieceNumRotations - 1;
         m_pieceLastRotationTime = 0.0f;
@@ -165,7 +169,7 @@ void ScTetrisImagitronFile :: configure()
     //Lateral Movement
     if(abs(x_dist) > 0.0f) {
       float distFactor = 10.0f*abs(x_dist / (getBoundingBoxCenter().x - m_pieceDiscreteFinalPos.x));
-      m_piecePos +=  m_speedH * distFactor * (x_dist/abs(x_dist))* -1.0f * m_frames.getTimeSinceLastFrame();
+      m_piecePos.x +=  (x_dist/abs(x_dist))* -1.0f * min(abs(m_speedH.x * distFactor  * m_frames.getTimeSinceLastFrame()), abs(x_dist));
     }
   }
 
@@ -185,7 +189,7 @@ void ScTetrisImagitronFile :: render()
       if(m_currentPieceIndex < m_pieces.size())
         renderMovingPiecePos(m_currentPieceIndex);
       
-      //renderGrid();
+      renderGrid();
     glPopMatrix();
 }
 

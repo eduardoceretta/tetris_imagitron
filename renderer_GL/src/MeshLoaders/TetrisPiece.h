@@ -54,6 +54,11 @@ public:
   void setBlock(const Vector3 v, const unsigned int i);
 
   /**
+   * Set Piece Color
+   */
+  void setColor(const Color c);
+
+  /**
    * Get properties
    */
   Vector3 getPosition() const;
@@ -113,6 +118,7 @@ private:
    * Create a static map that will map a piece type to a Mesh
    */ 
   static void createPieceVboMap(std::string model_path);
+
 };
 
 #endif

@@ -22,6 +22,7 @@ TetrisPiece::TetrisPiece()
 ,m_type(TetrisPiece::PieceType::O)
 ,m_vbo(NULL)
 {
+  m_color = Color(float(rand()%1000)/1000,float(rand()%1000)/1000,float(rand()%1000)/1000);
   if(s_hashmap.empty()) {
     createHashMap();
   }
@@ -45,6 +46,11 @@ void TetrisPiece::setBlock(const Vector3 v, const unsigned int i)
   m_blocks[i] = v;
 }
 
+void TetrisPiece::setColor(const Color c)
+{
+  m_color = c;
+}
+
 
 void TetrisPiece::configure()
 {
@@ -59,8 +65,7 @@ void TetrisPiece::configure()
 
   m_pos = getBoundingBoxCenter();
   m_localDiscreteCenter = calcLocalDiscreteCenter();
-  m_color = Color(float(rand()%1000)/1000,float(rand()%1000)/1000,float(rand()%1000)/1000);
-
+  
   std::cout << "Position: " << m_pos << " Type: " << m_type << " RotAngle: " << m_rotAngle << endl;
   for (int i = 0; i < 4; ++i) {
     std::cout << i << ") " << m_blocks[i];
