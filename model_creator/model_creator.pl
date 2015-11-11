@@ -1,6 +1,5 @@
 use strict;
 use warnings;
-use Carp::Always;
 
 use POSIX qw/floor strftime/;
 use List::Util qw(shuffle);
