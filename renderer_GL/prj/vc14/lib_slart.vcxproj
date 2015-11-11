@@ -1,0 +1,162 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{6F617373-6269-6C00-0000-000000000000}</ProjectGuid>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>14.0.23107.0</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>.\lib_slart_Debug\</OutDir>
+    <IntDir>.\lib_slart_Debug\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>lib_slart_Release\</OutDir>
+    <IntDir>lib_slart_Release\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalOptions>-wd4996 -wd4290 -wd4800 %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\ext\include;..\..\ext\include\glew;..\..\ext\include\glut;..\..\ext\include\ply;..\..\ext\include\GL;..\..\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;TEC_32;XP_DEPLOYING;TEC_LITTLEENDIAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalOptions>-wd4996 -wd4290 -wd4800 %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories>..\..\ext\include;..\..\ext\include\glew;..\..\ext\include\glut;..\..\ext\include\ply;..\..\ext\include\GL;..\..\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;TEC_32;XP_DEPLOYING;TEC_LITTLEENDIAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\GLLights\GLDirectionalLight.cpp" />
+    <ClCompile Include="..\..\src\GLLights\GLLight.cpp" />
+    <ClCompile Include="..\..\src\GLLights\GLPointLight.cpp" />
+    <ClCompile Include="..\..\src\GLLights\GLSpotLight.cpp" />
+    <ClCompile Include="..\..\src\GLUtils\GLAnimationObject.cpp" />
+    <ClCompile Include="..\..\src\GLUtils\GLError.cpp" />
+    <ClCompile Include="..\..\src\GLUtils\GLFont.cpp" />
+    <ClCompile Include="..\..\src\GLUtils\GLFrameBufferObject.cpp" />
+    <ClCompile Include="..\..\src\GLUtils\GLOcclusionQuery.cpp" />
+    <ClCompile Include="..\..\src\GLUtils\GLProjectionMatrix.cpp" />
+    <ClCompile Include="..\..\src\GLUtils\GLRenderBufferObject.cpp" />
+    <ClCompile Include="..\..\src\GLUtils\GLShader.cpp" />
+    <ClCompile Include="..\..\src\GLUtils\GLTextureObject.cpp" />
+    <ClCompile Include="..\..\src\GLUtils\GLTimer.cpp" />
+    <ClCompile Include="..\..\src\GLUtils\GLVertexBufferObject.cpp" />
+    <ClCompile Include="..\..\src\Handlers\GLCameraHandler.cpp" />
+    <ClCompile Include="..\..\src\Handlers\SphereGLCameraHandler.cpp" />
+    <ClCompile Include="..\..\src\Kernels\KernelBase.cpp" />
+    <ClCompile Include="..\..\src\Kernels\KernelColor.cpp" />
+    <ClCompile Include="..\..\src\MathUtils\Bit.cpp" />
+    <ClCompile Include="..\..\src\MathUtils\Color.cpp" />
+    <ClCompile Include="..\..\src\MathUtils\Matrix3.cpp" />
+    <ClCompile Include="..\..\src\MathUtils\Matrix4.cpp" />
+    <ClCompile Include="..\..\src\MathUtils\UniformPoissonDiskSampler.cpp" />
+    <ClCompile Include="..\..\src\MathUtils\Vector3.cpp" />
+    <ClCompile Include="..\..\src\MathUtils\Vector4.cpp" />
+    <ClCompile Include="..\..\src\MeshLoaders\AssimpMeshFile.cpp" />
+    <ClCompile Include="..\..\src\MeshLoaders\KeyFrameMesh.cpp" />
+    <ClCompile Include="..\..\src\MeshLoaders\MeshFileBase.cpp" />
+    <ClCompile Include="..\..\src\MeshLoaders\MeshLoader.cpp" />
+    <ClCompile Include="..\..\src\MeshLoaders\MsbMeshFile.cpp" />
+    <ClCompile Include="..\..\src\MeshLoaders\MshMeshFile.cpp" />
+    <ClCompile Include="..\..\src\MeshLoaders\TetrisPiece.cpp" />
+    <ClCompile Include="..\..\src\MeshLoaders\UmMeshFile.cpp" />
+    <ClCompile Include="..\..\src\Objects\Frames.cpp" />
+    <ClCompile Include="..\..\src\Objects\Timer.cpp" />
+    <ClCompile Include="..\..\src\ScScene\ScAnimMesh.cpp" />
+    <ClCompile Include="..\..\src\ScScene\ScCamera.cpp" />
+    <ClCompile Include="..\..\src\ScScene\ScLight.cpp" />
+    <ClCompile Include="..\..\src\ScScene\ScMaterial.cpp" />
+    <ClCompile Include="..\..\src\ScScene\ScMesh.cpp" />
+    <ClCompile Include="..\..\src\ScScene\ScScene.cpp" />
+    <ClCompile Include="..\..\src\ScScene\ScTetrisImagitronFile.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\defines.h" />
+    <ClInclude Include="..\..\src\GLLights\GLDirectionalLight.h" />
+    <ClInclude Include="..\..\src\GLLights\GLLight.h" />
+    <ClInclude Include="..\..\src\GLLights\GLPointLight.h" />
+    <ClInclude Include="..\..\src\GLLights\GLSpotLight.h" />
+    <ClInclude Include="..\..\src\GLUtils\GLAnimationObject.h" />
+    <ClInclude Include="..\..\src\GLUtils\GLError.h" />
+    <ClInclude Include="..\..\src\GLUtils\GLFont.h" />
+    <ClInclude Include="..\..\src\GLUtils\GLFrameBufferObject.h" />
+    <ClInclude Include="..\..\src\GLUtils\GLOcclusionQuery.h" />
+    <ClInclude Include="..\..\src\GLUtils\GLProjectionMatrix.h" />
+    <ClInclude Include="..\..\src\GLUtils\GLRenderBufferObject.h" />
+    <ClInclude Include="..\..\src\GLUtils\GLShader.h" />
+    <ClInclude Include="..\..\src\GLUtils\GLTextureObject.h" />
+    <ClInclude Include="..\..\src\GLUtils\GLTimer.h" />
+    <ClInclude Include="..\..\src\GLUtils\GLVertexBufferObject.h" />
+    <ClInclude Include="..\..\src\Handlers\GLCameraHandler.h" />
+    <ClInclude Include="..\..\src\Handlers\SphereGLCameraHandler.h" />
+    <ClInclude Include="..\..\src\Kernels\KernelBase.h" />
+    <ClInclude Include="..\..\src\Kernels\KernelColor.h" />
+    <ClInclude Include="..\..\src\MathUtils\Bit.h" />
+    <ClInclude Include="..\..\src\MathUtils\Color.h" />
+    <ClInclude Include="..\..\src\MathUtils\MathDefines.h" />
+    <ClInclude Include="..\..\src\MathUtils\Matrix3.h" />
+    <ClInclude Include="..\..\src\MathUtils\Matrix4.h" />
+    <ClInclude Include="..\..\src\MathUtils\UniformPoissonDiskSampler.h" />
+    <ClInclude Include="..\..\src\MathUtils\Vector3.h" />
+    <ClInclude Include="..\..\src\MathUtils\Vector4.h" />
+    <ClInclude Include="..\..\src\MeshLoaders\AssimpMeshFile.h" />
+    <ClInclude Include="..\..\src\MeshLoaders\KeyFrameMesh.h" />
+    <ClInclude Include="..\..\src\MeshLoaders\MeshFileBase.h" />
+    <ClInclude Include="..\..\src\MeshLoaders\MeshLoader.h" />
+    <ClInclude Include="..\..\src\MeshLoaders\MsbMeshFile.h" />
+    <ClInclude Include="..\..\src\MeshLoaders\MshMeshFile.h" />
+    <ClInclude Include="..\..\src\MeshLoaders\TetrisPiece.h" />
+    <ClInclude Include="..\..\src\MeshLoaders\UmMeshFile.h" />
+    <ClInclude Include="..\..\src\Objects\Frames.h" />
+    <ClInclude Include="..\..\src\Objects\Timer.h" />
+    <ClInclude Include="..\..\src\ScScene\ScAnimMesh.h" />
+    <ClInclude Include="..\..\src\ScScene\ScCamera.h" />
+    <ClInclude Include="..\..\src\ScScene\ScLight.h" />
+    <ClInclude Include="..\..\src\ScScene\ScMaterial.h" />
+    <ClInclude Include="..\..\src\ScScene\ScMesh.h" />
+    <ClInclude Include="..\..\src\ScScene\ScScene.h" />
+    <ClInclude Include="..\..\src\ScScene\ScTetrisImagitronFile.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
