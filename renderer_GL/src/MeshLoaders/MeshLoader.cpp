@@ -15,7 +15,6 @@
 #include "MeshLoaders\MshMeshFile.h"
 #include "MeshLoaders\MsbMeshFile.h"
 #include "MeshLoaders\UmMeshFile.h"
-#include "MeshLoaders\PlyMeshFile.h"
 #include "MeshLoaders\AssimpMeshFile.h"
 
 using namespace std;
@@ -27,7 +26,6 @@ MeshFileBase* MeshLoader :: s_meshLoaders[] =
   new MshMeshFile(),
   new UmMeshFile(),
   new MsbMeshFile(),
-  new PlyMeshFile(),
   new AssimpMeshFile()
 };
 
