@@ -6,15 +6,53 @@ use List::Util qw(shuffle);
 use Getopt::Long;
 use Data::Dumper;
 
+use Image::Magick;
+
 use Vec2;
 use Piece;
 use Matrix;
 use MatrixCel;
 
 
-my $VERSION = 1.0;
+my $VERSION = 1.1;
 
 # . free , | soft block , # hard block
+
+my $str_img = <<"TXT";
+GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGGGGGGGRGGGGGGGGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGGGGGGRRRGGGGGGGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGGGGGRRRRRGGGGGGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGGGRRRRRRRRGGGGGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGGRRRRRRRRRRRGGGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGRRRRRRRRRRRRRRGGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGRRRRRRRRRRRRRRRRGGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGRRRRRRBBBBBRRRRRRRGGGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGGRRRRRRBBRRRRRBBRRRRRRRGGGGGGGGGGGGGGGG
+GGGGGGGGGGGGGRRRRRRBRRRRRRRRRBRRRRRRRRGGGGGGGGGGGGGG
+GGGGGGGGGGGRRRRRRRBRRRRRRRRRRRBRRRRRRRRRGGGGGGGGGGGG
+GGGGGGGGGRRRRRRRRBRRRRRRRRRRRRRBRRRRRRRRRGGGGRGGGGGG
+GGGGGGGGRRRRRRRRBRRRRRRRRRRRRRRRBRRRRRRRRRGGGGGGGGGG
+GGGGGGGRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRGGGGGGGGG
+GGGGGGRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRGGGGGGGG
+GGGGGRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRGGGGGGG
+GGGGGRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRGGGGGG
+GGGGRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRGGGGGG
+GGGGRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRGGGGG
+GGGGRRRRRBRRRRRRRRRRRRRRRRRRRBBRRRRRRRRRRRRRRRRGGGGG
+GGGGRRRRRBRRRRRRRRRRRRRRRRRRRRBBRRRRRRRRRRRRRRGGGGGG
+GGGGGRRRRBBRRRRRRRRRRRRRRRRRRRRBBRRRRRRRRRRRRGGGGGGG
+GGGGGGRRRRBBBRRRRRRRRRRGGRRRRRRRBBRRRRRRRRRRGGGGGGGG
+GGGGGGGGRRRRRBRRRRRRRRGGGGRRRRRRRRRRRRRRRRGGGGGGGGGG
+GGGGGGGGGGRRRRRRRRGGGGGGGGGGGGRRRRRRRRRRGGGGGGGGGGGG
+GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
+TXT
+
+
+
+
+
+
 my $str_imgT = <<"TXT";
 #.###.##...##.###
 ...#..###.###..##
@@ -56,7 +94,7 @@ my $str_img0 = <<"TXT";
 ###......
 TXT
 
-my $str_img = <<"TXT";
+my $str_imgK = <<"TXT";
 .................................
 .................................
 ....|||||......|||||....|||||....
@@ -97,7 +135,13 @@ sub main {
   srand($seed);
   print STDERR Data::Dumper::Dumper("Seed: " . $seed) if $VERBOSE;
 
-  my $matrix = getMatrix($str_img);
+
+  my $file_name = 'test.png';
+  my $matrix = getOccupancyMatrixFromImage($file_name);
+  my $color_data = getColorDataFromImage($file_name);
+
+  # my $matrix = getOccupancyMatrix($str_img);
+  # my $color_data = getColorData($str_img);
   my $msize = $matrix->size();
   my $mfree_size = $matrix->getClassSize('free');
   my $optimal = floor($mfree_size/4);
@@ -121,6 +165,8 @@ sub main {
 
   my $sorted_list = sortForAnimation($matrix, \@piece_list);
   die "We lost pieces during sorting..." if scalar @piece_list != scalar @{$sorted_list};
+
+  applyColor($color_data, $sorted_list);
 
   print STDERR Data::Dumper::Dumper("Seed: " . $seed) if $VERBOSE;
 
@@ -217,6 +263,23 @@ sub sortForAnimation {
 }
 
 
+sub applyColor {
+  my ($color_data, $piece_list) = @_;
+  for my $piece (@{$piece_list}) {
+    my $avg_color = [0,0,0];
+    for my $pos (@{$piece->array}) {
+      my $color = $color_data->[$pos->y]->[$pos->x];
+      $avg_color->[0] += $color->[0];
+      $avg_color->[1] += $color->[1];
+      $avg_color->[2] += $color->[2];
+    }
+    $avg_color->[0] = $avg_color->[0]/4;
+    $avg_color->[1] = $avg_color->[1]/4;
+    $avg_color->[2] = $avg_color->[2]/4;
+    $piece->color($avg_color);
+  }
+}
+
 sub hasFreeNeighbors {
   my ($matrix, $cel, $directions) = @_;
 
@@ -248,7 +311,7 @@ sub hasFreeNeighbors {
 }
 
 
-sub getMatrix {
+sub getOccupancyMatrix {
   my $str_image = shift;
 
   my @matrix = ();
@@ -260,7 +323,7 @@ sub getMatrix {
     my $x = 0;
     for my $c (split //, $line) {
       # . free, | soft block, # hard block
-      push @row, $c eq'.'
+      push @row, $c =~ /[.RGB]/
               ? matrixcel(vec2($x, $y), 'free')
               : $c eq '|'
                   ? matrixcel(vec2($x, $y), 'softblock')
@@ -273,6 +336,98 @@ sub getMatrix {
 
   return Matrix->new(\@matrix);
 }
+
+
+
+sub getOccupancyMatrixFromImage {
+  my ($file_name) = @_;
+
+  my $image = Image::Magick->new;
+  my $x = $image->Read($file_name);
+  die "Can't open image file $file_name: $x" if $x;
+
+  my ($w, $h) = $image->Get('columns', 'rows');
+
+  my @matrix = ();
+  for (my $l = 0; $l < $h; ++$l) {
+    my @row = ();
+    for (my $c = 0; $c < $w; ++$c) {
+      my @color = $image->GetPixel(
+        x         => $c,
+        y         => $l,
+      );
+
+      push @row, scalar @color == 3
+                      ? matrixcel(vec2($c, $l), 'free')
+                      : matrixcel(vec2($c, $l), 'block');
+    }
+    push @matrix, \@row;
+  }
+
+  return Matrix->new(\@matrix);
+}
+
+
+sub getColorDataFromImage {
+  my ($file_name) = @_;
+
+  my $image = Image::Magick->new;
+  my $x = $image->Read($file_name);
+  die "Can't open image file $file_name: $x" if $x;
+
+  my ($w, $h) = $image->Get('columns', 'rows');
+
+  my @matrix = ();
+  for (my $l = 0; $l < $h; ++$l) {
+    my @row = ();
+    for (my $c = 0; $c < $w; ++$c) {
+      my @color = $image->GetPixel(
+        x         => $c,
+        y         => $l,
+      );
+
+      push @row, scalar @color == 3
+                      ? \@color
+                      : [0,0,0];
+    }
+    push @matrix, \@row;
+  }
+
+  return \@matrix;
+}
+
+
+
+
+
+sub getColorData {
+  my $str_image = shift;
+
+  my @matrix = ();
+  my $y = 0;
+  for my $line (split /^/, $str_image) {
+    my @row = ();
+    chomp $line;
+
+    my $x = 0;
+    for my $c (split //, $line) {
+      # . free, | soft block, # hard block
+      push @row, $c eq 'R'
+              ? [1,0,0]
+              : $c eq 'G'
+                  ? [0,1,0]
+                  : $c eq 'B'
+                    ? [0,0,1]
+                    : [0,0,0];
+      ++$x;
+    }
+    push @matrix, \@row;
+    ++$y;
+  }
+
+  return \@matrix;
+}
+
 
 sub printMatrix {
   my $matrix = shift;
@@ -294,11 +449,14 @@ sub writeResult {
   print "\n";
 
   print "// Pieces (sorted for animation)", "\n";
-  print "//   PIECE PART0_X PART0_Y PART1_X PART1_Y PART2_X PART2_Y PART3_X PART3_Y", "\n";
+  print "//   PIECE PART0_X PART0_Y PART1_X PART1_Y PART2_X PART2_Y PART3_X PART3_Y COLOR_R COLOR_G COLOR_B", "\n";
 
 
   for my $piece (@{$sorted_list}) {
-    print 'PIECE ' . (sprintf "     %5d %5d"x4,  map {($_->x,$_->y)} @{$piece->array}), "\n";
+    print 'PIECE '
+      . (sprintf "     %5d %5d"x4,  map {($_->x,$_->y)} @{$piece->array})
+      . (sprintf "     %5.3f %5.3f %5.3f",  @{$piece->color})
+      , "\n";
   }
 
   print "\n";

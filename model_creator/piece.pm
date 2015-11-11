@@ -10,18 +10,19 @@ my $counter = 0;
 sub new {
   my ($class, $param) = @_;
   my $obj = {};
-
   if(defined $param) {
     if (ref($param) eq "ARRAY") {
       $obj->{array} = $param;
     }elsif (ref($param) eq "HASH" || ref($param) eq $class) {
       $obj->{id}    = $param->{id};
       $obj->{array} = $param->{array};
+      $obj->{color} = $param->{color};
     }
   }
 
   $obj->{id}    = ++$counter if !defined $obj->{id};
   $obj->{array} = $obj->{array} // [];
+  $obj->{color} = $obj->{color} // [rand(), rand(), rand()];
 
   return bless $obj, $class;
 }
@@ -34,6 +35,12 @@ sub id {
 sub char {
   my $self = shift;
   return chr(65 + ( $self->{id} % 25));
+}
+
+sub color {
+  my ($self, $color) = @_;
+  $self->{color} = $color if defined $color && scalar @{$color} == 3;
+  return $self->{color};
 }
 
 sub size {
