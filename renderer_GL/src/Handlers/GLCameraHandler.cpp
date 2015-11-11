@@ -8,6 +8,7 @@
 #include <iostream>
 #include <assert.h>
 #include <cmath>
+#include <algorithm>
 
 #include "Handlers/GLCameraHandler.h"
 #include "GLLights/GLPointLight.h"

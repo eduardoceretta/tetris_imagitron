@@ -8,6 +8,7 @@
 #include <GL/glew.h>
 #include <iostream>
 #include <assert.h>
+#include <algorithm>
 #include "GLFrameBufferObject.h"
 #include "GLUtils/GLRenderBufferObject.h"
 #include "GLUtils/GLTextureObject.h"

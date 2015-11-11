@@ -12,6 +12,7 @@
 #include <GL\glew.h>
 #include <GL\glut.h>
 #include <cmath>
+#include <algorithm>
 
 #include "MathUtils/Vector3.h"
 #include "MathUtils/Matrix3.h"

@@ -11,6 +11,7 @@
 #include <string>
 #include <limits>
 #include <cmath>
+#include <algorithm>
 #include "defines.h"
 #include "GLUtils/GLVertexBufferObject.h"
 

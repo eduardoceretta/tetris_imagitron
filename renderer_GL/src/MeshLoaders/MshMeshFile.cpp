@@ -9,6 +9,7 @@
  */
 #include "MeshLoaders/MshMeshFile.h"
 #include <string>
+#include <algorithm>
 #include "defines.h"
 
 MshMeshFile::MshMeshFile(void):MeshFileBase()

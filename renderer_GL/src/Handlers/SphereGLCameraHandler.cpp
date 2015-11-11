@@ -9,6 +9,7 @@
 #include <iostream>
 #include <assert.h>
 #include <cmath>
+#include <algorithm>
 
 #include "Handlers/SphereGLCameraHandler.h"
 #include "GLLights/GLPointLight.h"

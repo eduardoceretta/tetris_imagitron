@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string>
+#include <algorithm>
 
 #include "MeshLoaders/PlyMeshFile.h"
 #include "defines.h"

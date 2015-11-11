@@ -8,6 +8,7 @@
 #include <iostream>
 #include <sstream>
 #include <cassert>
+#include <algorithm>
 #include "defines.h"
 #include "GLShader.h"
 #include "GLError.h"

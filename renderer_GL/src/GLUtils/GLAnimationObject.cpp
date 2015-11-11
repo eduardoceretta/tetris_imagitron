@@ -11,6 +11,7 @@
 #include <GL/glew.h>
 #include <iostream>
 #include <limits>
+#include <algorithm>
 #include "defines.h"
 
 #include "GLUtils/GLAnimationObject.h"

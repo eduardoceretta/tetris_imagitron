@@ -9,6 +9,7 @@
  */
 #include "MeshLoaders/UmMeshFile.h"
 #include <string>
+#include <algorithm>
 #include "defines.h"
 
 UmMeshFile::UmMeshFile(void):MeshFileBase()
