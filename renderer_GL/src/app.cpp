@@ -316,14 +316,27 @@ void App::listenKeyboard( int key )
 
   case 'Q':
   case 'q':
+    for (int i = 0; i < m_rtScene->getNumTetrisImagitronFiles(); ++i) {
+      ScTetrisImagitronFile *f = m_rtScene->getTetrisImagitronFileAt(i);
+      f->setAnimationType(ScTetrisImagitronFile::AnimationType::Once);
+    }
     break;
 
   case 'W':
   case 'w':
+    for (int i = 0; i < m_rtScene->getNumTetrisImagitronFiles(); ++i) {
+      ScTetrisImagitronFile *f = m_rtScene->getTetrisImagitronFileAt(i);
+      f->setAnimationType(ScTetrisImagitronFile::AnimationType::Loop);
+    }
     break;
 
   case 'E':
   case 'e':
+    break;
+  
+  case 'R':
+  case 'r':
+    m_kernelColor->reloadShader();
     break;
 
   case 'M':
@@ -342,6 +355,7 @@ void App::listenKeyboard( int key )
 
   case 'B':
   case 'b':
+    m_kernelColor->reloadShader();
     break;
 
   case 'Y':
@@ -409,15 +423,19 @@ void App::listenKeyboard( int key )
 
   case 'K':
   case 'k':
+    for (int i = 0; i < m_rtScene->getNumTetrisImagitronFiles(); ++i) {
+      ScTetrisImagitronFile *f = m_rtScene->getTetrisImagitronFileAt(i);
+     f->finishAnimation();
+    }
+
     break;
 
   case 'J':
   case 'j':
-    break;
-
-  case 'R':
-  case 'r':
-    m_kernelColor->reloadShader();
+    for (int i = 0; i < m_rtScene->getNumTetrisImagitronFiles(); ++i) {
+      ScTetrisImagitronFile *f = m_rtScene->getTetrisImagitronFileAt(i);
+      f->resetAnimation();
+    }
     break;
 
   case 'I':
@@ -461,6 +479,14 @@ void App::listenKeyboard( int key )
 
   case 'P':
   case 'p':
+    for (int i = 0; i < m_rtScene->getNumTetrisImagitronFiles(); ++i) {
+      ScTetrisImagitronFile *f = m_rtScene->getTetrisImagitronFileAt(i);
+      if (f->isPlayingAnimation()) {
+        f->pauseAnimation();
+      } else {
+        f->playAnimation();
+      }
+    }
     break;
   
   

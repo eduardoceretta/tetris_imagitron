@@ -31,6 +31,8 @@ ScTetrisImagitronFile::ScTetrisImagitronFile()
 ,m_pieceDiscretePos(0, 0, 0)
 ,m_pieceDiscreteFinalPos(0,0,0)
 ,m_piecePos(0,0,0)
+,m_animType(AnimationType::Once)
+,m_isplaying(true)
 {
 }
 
@@ -117,65 +119,80 @@ void ScTetrisImagitronFile::readFile(string fileName)
 
 void ScTetrisImagitronFile :: configure()
 {
-  if(m_outdated == true)
-  {
+  if(m_outdated == true) {
     m_outdated = false;
   }  
   m_frames.update();
   
+  // Convert piece world position to 2D discrete Grid position
   m_pieceDiscretePos = Vector3(floor(m_piecePos.x), floor(m_piecePos.y), floor(m_piecePos.z)) + Vector3(0.5f, 0.5f, 0.0f);
   float y_dist = m_pieceDiscretePos.y - m_pieceDiscreteFinalPos.y;
   float x_dist = m_pieceDiscretePos.x - m_pieceDiscreteFinalPos.x;
-  if(y_dist < 1) {
-    //// LOOP REVIEW
-    m_currentPieceIndex = (m_currentPieceIndex + 1)%m_pieces.size();
-    //// ONCE REVIEW
-    //m_currentPieceIndex = std::min(m_currentPieceIndex + 1, (int)m_pieces.size());
-    if (m_currentPieceIndex < m_pieces.size()) {
-      const TetrisPiece &p = m_pieces.at(m_currentPieceIndex);
-      Vector3 p_pos = p.getPosition();
-      Vector3 p_local_center = p.getLocalDiscreteCenter();
-      Vector3 rotated = p_local_center;
-      rotated.rotateAxis(p.getRotation(), Vector3(0,0,-1));
-      m_pieceDiscreteFinalPos = p_pos + rotated;
-      
-      
-      m_piecePos = Vector3(getBoundingBoxCenter().x, getBoundingBoxCenter().y + getBoundingBoxMax().y/2, 0.0f);
-      m_pieceDiscretePos = Vector3(floor(m_piecePos.x), floor(m_piecePos.y), floor(m_piecePos.z)) + Vector3(0.5f, 0.5f, 0.0f);
+  
+  if (m_isplaying) {
 
-      if (p.getType() != TetrisPiece::PieceType::O) {
-        m_pieceNumRotations = rand()%MAX_ROTATIONS;
-      } else {
-        m_pieceNumRotations = 0;
+    // Is piece at its final position?
+    if (y_dist < 1) {
+      // Calculate Next Piece to render
+
+      //// Animation Type
+      switch (m_animType) {
+      default:
+      case ScTetrisImagitronFile::AnimationType::Once:
+        m_currentPieceIndex = std::min(m_currentPieceIndex + 1, (int)m_pieces.size());
+        break;
+      case ScTetrisImagitronFile::AnimationType::Loop:
+        m_currentPieceIndex = (m_currentPieceIndex + 1) % m_pieces.size();
+        break;
+      }
+
+      if (m_currentPieceIndex < m_pieces.size()) {
+        const TetrisPiece &p = m_pieces.at(m_currentPieceIndex);
+        Vector3 p_pos = p.getPosition();
+        Vector3 p_local_center = p.getLocalDiscreteCenter();
+        Vector3 rotated = p_local_center;
+        rotated.rotateAxis(p.getRotation(), Vector3(0, 0, -1));
+        m_pieceDiscreteFinalPos = p_pos + rotated;
+
+        m_piecePos = Vector3(getBoundingBoxCenter().x, getBoundingBoxCenter().y + getBoundingBoxMax().y / 2, 0.0f);
+        m_pieceDiscretePos = Vector3(floor(m_piecePos.x), floor(m_piecePos.y), floor(m_piecePos.z)) + Vector3(0.5f, 0.5f, 0.0f);
+
+        if (p.getType() != TetrisPiece::PieceType::O) {
+          m_pieceNumRotations = rand() % MAX_ROTATIONS;
+        }
+        else {
+          m_pieceNumRotations = 0;
+        }
       }
     }
-  } else {
-    if(y_dist < POSITION_Y_BOOST_THRESHOLD)
-      m_piecePos += m_speedVBoost*m_frames.getTimeSinceLastFrame();
-    else
-      m_piecePos += m_speedV*m_frames.getTimeSinceLastFrame();
-    
-    // Rotation
-    if (m_pieceNumRotations > 0) {
-      m_pieceLastRotationTime += m_frames.getTimeSinceLastFrame();
-      float rotProbabityTimeFactor = (3.0f - m_pieceLastRotationTime*abs(~m_speedV)/5)*((float)m_pieceNumRotations/MAX_ROTATIONS);
-      float rotProbabilityDistFactor = max(m_pieceDiscretePos.y - (m_pieceDiscreteFinalPos.y + ROTATION_Y_THRESHOLD), 0.0f) / ((getBoundingBoxMax().y/2) - (m_pieceDiscreteFinalPos.y + ROTATION_Y_THRESHOLD));
-      if (rand()%100 >= 99.999999 * rotProbabilityDistFactor*rotProbabityTimeFactor){
-        m_pieceNumRotations = m_pieceNumRotations - 1;
-        m_pieceLastRotationTime = 0.0f;
+    else {
+      if (y_dist < POSITION_Y_BOOST_THRESHOLD)
+        m_piecePos += m_speedVBoost*m_frames.getTimeSinceLastFrame();
+      else
+        m_piecePos += m_speedV*m_frames.getTimeSinceLastFrame();
+
+      // Rotation
+      if (m_pieceNumRotations > 0) {
+        m_pieceLastRotationTime += m_frames.getTimeSinceLastFrame();
+        float rotProbabityTimeFactor = (3.0f - m_pieceLastRotationTime*abs(~m_speedV) / 5)*((float)m_pieceNumRotations / MAX_ROTATIONS);
+        float rotProbabilityDistFactor = max(m_pieceDiscretePos.y - (m_pieceDiscreteFinalPos.y + ROTATION_Y_THRESHOLD), 0.0f) / ((getBoundingBoxMax().y / 2) - (m_pieceDiscreteFinalPos.y + ROTATION_Y_THRESHOLD));
+        if (rand() % 100 >= 99.999999 * rotProbabilityDistFactor*rotProbabityTimeFactor) {
+          m_pieceNumRotations = m_pieceNumRotations - 1;
+          m_pieceLastRotationTime = 0.0f;
+        }
+      }
+
+      //Lateral Movement
+      if (abs(x_dist) > 0.0f) {
+        float distFactor = 10.0f*abs(x_dist / (getBoundingBoxCenter().x - m_pieceDiscreteFinalPos.x));
+        m_piecePos.x += (x_dist / abs(x_dist))* -1.0f * min(abs(m_speedH.x * distFactor  * m_frames.getTimeSinceLastFrame()), abs(x_dist));
       }
     }
 
-    //Lateral Movement
-    if(abs(x_dist) > 0.0f) {
-      float distFactor = 10.0f*abs(x_dist / (getBoundingBoxCenter().x - m_pieceDiscreteFinalPos.x));
-      m_piecePos.x +=  (x_dist/abs(x_dist))* -1.0f * min(abs(m_speedH.x * distFactor  * m_frames.getTimeSinceLastFrame()), abs(x_dist));
+    vector<TetrisPiece> ::iterator it;
+    for (it = m_pieces.begin(); it != m_pieces.end(); ++it) {
+      it->configure();
     }
-  }
-
-  vector<TetrisPiece> :: iterator it;
-  for (it = m_pieces.begin(); it != m_pieces.end(); ++it) {
-    it->configure();
   }
 }
 
@@ -189,7 +206,7 @@ void ScTetrisImagitronFile :: render()
       if(m_currentPieceIndex < m_pieces.size())
         renderMovingPiecePos(m_currentPieceIndex);
       
-      renderGrid();
+      //renderGrid();
     glPopMatrix();
 }
 
@@ -310,3 +327,40 @@ void ScTetrisImagitronFile::setSpeedV( Vector3 val )
   }
   m_speedV = val;
 }
+
+ScTetrisImagitronFile::AnimationType ScTetrisImagitronFile::getAnimationType() const
+{
+	return m_animType;
+}
+
+void ScTetrisImagitronFile::setAnimationType(const ScTetrisImagitronFile::AnimationType val)
+{
+	m_animType = val;
+}
+
+void ScTetrisImagitronFile::resetAnimation()
+{
+  m_currentPieceIndex = -1;
+}
+
+void ScTetrisImagitronFile::finishAnimation()
+{
+  m_currentPieceIndex = (int)m_pieces.size();
+}
+
+void ScTetrisImagitronFile::playAnimation()
+{
+  m_isplaying = true;
+}
+
+void ScTetrisImagitronFile::pauseAnimation()
+{
+  m_isplaying = false;
+}
+
+bool ScTetrisImagitronFile::isPlayingAnimation()
+{
+  return m_isplaying;
+}
+
+

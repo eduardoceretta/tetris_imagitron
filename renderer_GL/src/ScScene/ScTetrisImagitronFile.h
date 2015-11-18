@@ -19,6 +19,10 @@ using namespace std;
 
 class ScTetrisImagitronFile
 {
+public:
+  enum AnimationType { Once = 0, Loop };
+
+private:
   vector<TetrisPiece> m_pieces;
   Vector3 m_pos;
   Vector3 m_scale;
@@ -30,6 +34,9 @@ class ScTetrisImagitronFile
   int m_currentPieceIndex;
 
   Frames m_frames;
+
+  AnimationType m_animType;
+  bool m_isplaying;
 
   Vector3 m_piecePos;
   Vector3 m_pieceDiscretePos;
@@ -63,6 +70,16 @@ public:
 
   Vector3 getSpeedV() const;
   void setSpeedV(Vector3 val);
+
+  AnimationType getAnimationType() const;
+  void setAnimationType(const AnimationType val);
+
+  void resetAnimation();
+  void finishAnimation();
+  void pauseAnimation();
+  void playAnimation();
+  bool isPlayingAnimation();
+  
   
   /**
    * Update Animation Attributes
