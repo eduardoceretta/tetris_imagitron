@@ -135,8 +135,12 @@ sub main {
   srand($seed);
   print STDERR Data::Dumper::Dumper("Seed: " . $seed) if $VERBOSE;
 
+  my $file_name = $ARGV[0];
+  if(!defined $file_name) {
+    print "No input image received.\n";
+    exit();
+  }
 
-  my $file_name = 'test.png';
   my $matrix = getOccupancyMatrixFromImage($file_name);
   my $color_data = getColorDataFromImage($file_name);
 
@@ -349,7 +353,7 @@ sub getOccupancyMatrixFromImage {
   my ($w, $h) = $image->Get('columns', 'rows');
 
   my @matrix = ();
-  for (my $l = 0; $l < $h; ++$l) {
+  for (my $l = $h - 1; $l >= 0; --$l) {
     my @row = ();
     for (my $c = 0; $c < $w; ++$c) {
       my @color = $image->GetPixel(
@@ -378,7 +382,7 @@ sub getColorDataFromImage {
   my ($w, $h) = $image->Get('columns', 'rows');
 
   my @matrix = ();
-  for (my $l = 0; $l < $h; ++$l) {
+  for (my $l = $h - 1; $l >= 0; --$l) {
     my @row = ();
     for (my $c = 0; $c < $w; ++$c) {
       my @color = $image->GetPixel(
