@@ -2,7 +2,7 @@ use strict;
 use warnings;
 
 use POSIX qw/floor strftime/;
-use List::Util qw(shuffle);
+use List::Util qw(shuffle min max);
 use Getopt::Long;
 use Data::Dumper;
 
@@ -121,6 +121,7 @@ sub matrixcel { return MatrixCel->new({pos => $_[0], type => $_[1], content => $
 my $VERBOSE      = 0;
 my $INCLUDE_IMG  = 0;
 my $SEED         = undef;
+my $COLOR_MODE   = "NEAREST";
 
 main();
 
@@ -128,6 +129,7 @@ sub main {
   return unless GetOptions (
     'verbose' => \$VERBOSE,
     'seed=s' => \$SEED,
+    'color_mode=s' => \$COLOR_MODE,
     'include_img' => \$INCLUDE_IMG,
   );
 
@@ -170,7 +172,7 @@ sub main {
   my $sorted_list = sortForAnimation($matrix, \@piece_list);
   die "We lost pieces during sorting..." if scalar @piece_list != scalar @{$sorted_list};
 
-  applyColor($color_data, $sorted_list);
+  applyColor($color_data, $sorted_list, $COLOR_MODE);
 
   print STDERR Data::Dumper::Dumper("Seed: " . $seed) if $VERBOSE;
 
@@ -268,19 +270,34 @@ sub sortForAnimation {
 
 
 sub applyColor {
-  my ($color_data, $piece_list) = @_;
+  my ($color_data, $piece_list, $color_mode) = @_;
   for my $piece (@{$piece_list}) {
-    my $avg_color = [0,0,0];
-    for my $pos (@{$piece->array}) {
-      my $color = $color_data->[$pos->y]->[$pos->x];
-      $avg_color->[0] += $color->[0];
-      $avg_color->[1] += $color->[1];
-      $avg_color->[2] += $color->[2];
+    if ($color_mode eq "LINEAR") {
+      my $avg_color = [0,0,0];
+      for my $pos (@{$piece->array}) {
+        my $color = $color_data->[$pos->y]->[$pos->x];
+        $avg_color->[0] += $color->[0];
+        $avg_color->[1] += $color->[1];
+        $avg_color->[2] += $color->[2];
+      }
+      $avg_color->[0] = $avg_color->[0]/4;
+      $avg_color->[1] = $avg_color->[1]/4;
+      $avg_color->[2] = $avg_color->[2]/4;
+      $piece->color($avg_color);
+
+    } else { # "NEAREST"
+      my $min_pos = $piece->array->[0];
+      my $max_pos = $piece->array->[0];
+      for my $pos (@{$piece->array}) {
+        $min_pos = vec2(min($pos->x, $min_pos->x), min($pos->y, $min_pos->y));
+        $max_pos = vec2(max($pos->x, $max_pos->x), max($pos->y, $max_pos->y));
+      }
+      my $center_pos = vec2(
+        floor( (($max_pos->x + $min_pos->x) / 2) + 0.5),
+        floor( (($max_pos->y + $min_pos->y) / 2) + 0.5)
+      );
+      $piece->color($color_data->[$center_pos->y]->[$center_pos->x]);
     }
-    $avg_color->[0] = $avg_color->[0]/4;
-    $avg_color->[1] = $avg_color->[1]/4;
-    $avg_color->[2] = $avg_color->[2]/4;
-    $piece->color($avg_color);
   }
 }
 
