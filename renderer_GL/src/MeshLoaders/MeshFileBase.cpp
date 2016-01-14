@@ -24,6 +24,7 @@ MeshFileBase::MeshFileBase(void)
 ,m_numVertices(0)
 ,m_numTriangles(0)
 ,m_vertices(NULL)
+,m_texCoords(NULL)
 ,m_normals(NULL)
 ,m_indexes(NULL)
 ,m_bb_min(Vector3(numeric_limits<float>::infinity( ), numeric_limits<float>::infinity( ), numeric_limits<float>::infinity( )))
@@ -68,6 +69,11 @@ GLfloat * MeshFileBase::getNormals() const
 GLfloat * MeshFileBase::getVertices() const
 {
   return m_vertices;
+}
+
+GLfloat * MeshFileBase::getTexCoords() const
+{
+  return m_texCoords;
 }
 
 unsigned int * MeshFileBase::getIndexes() const

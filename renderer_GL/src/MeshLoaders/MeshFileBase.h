@@ -71,6 +71,11 @@ protected:
   GLfloat * m_vertices;
 
   /**
+  * Model Vertexes Texture Coordinates Array
+  */
+  GLfloat * m_texCoords;
+
+  /**
    * Model Indexes Array
    */
   unsigned int * m_indexes;
@@ -121,6 +126,13 @@ public:
    *  Size equals 3*Number of Vertexes
    */
   GLfloat * getVertices() const;
+
+
+  /**
+  * Get the array of 2D texture coordinates of the model.
+  *  Size equals 2*Number of Vertexes
+  */
+  GLfloat * getTexCoords() const;
   
   /**
    * Get the array of normals of the model.

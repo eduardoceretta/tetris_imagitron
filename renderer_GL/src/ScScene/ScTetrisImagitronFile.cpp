@@ -217,7 +217,7 @@ void ScTetrisImagitronFile::renderMovingPiecePos(int i) const
   Vector3 p_local_center = p.getLocalDiscreteCenter();
 
   Color p_color = p.getColor();
-  glColor3f(p_color.r,p_color.g,p_color.b);
+  glColor4f(p_color.r,p_color.g,p_color.b, 1.0f);
   glPushMatrix();
     glTranslatef(m_pieceDiscretePos.x, m_pieceDiscretePos.y, m_pieceDiscretePos.z);
     glRotatef(90 * m_pieceNumRotations, 0,0,-1);
@@ -234,7 +234,7 @@ void ScTetrisImagitronFile::renderPieceFinalPos(int i) const
   Vector3 p_pos = p.getPosition();
   Color p_color = p.getColor();
 
-  glColor3f(p_color.r,p_color.g,p_color.b);
+  glColor4f(p_color.r,p_color.g,p_color.b, 1.0f);
   glPushMatrix();
     glTranslatef(p_pos.x, p_pos.y, p_pos.z);
     glRotatef(p.getRotation(), 0,0,-1);

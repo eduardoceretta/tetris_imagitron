@@ -20,6 +20,7 @@
 
 AssimpMeshFile::AssimpMeshFile(void)
 :MeshFileBase()
+,m_hasTexCoords(false)
 {
   m_fileType = "NOFILE";
 }
@@ -43,10 +44,10 @@ void AssimpMeshFile::calcVBO()
   m_vbo = new GLVertexBufferObject();
   m_vbo->setVBOBuffer(GL_VERTEX_ARRAY, GL_FLOAT, m_numVertices, m_vertices);
   m_vbo->setVBOBuffer(GL_NORMAL_ARRAY, GL_FLOAT, m_numVertices, m_normals);
+  if(m_hasTexCoords)
+    m_vbo->setVBOBuffer(GL_TEXTURE_COORD_ARRAY, GL_FLOAT, m_numVertices, m_texCoords);
   m_vbo->setVBOIndexBuffer(GL_UNSIGNED_INT, m_numTriangles*3, m_indexes);
   m_vbo->calcVBO();
-  if(m_writeBinaryFile)
-    writeBinaryFile(m_fileName);
 }
 
 
@@ -56,7 +57,7 @@ void AssimpMeshFile::calcTriangles()
   aiSetImportPropertyInteger(AI_CONFIG_PP_RVC_FLAGS
             , aiComponent_TANGENTS_AND_BITANGENTS 	 
             | aiComponent_COLORS
-            | aiComponent_TEXCOORDS
+            //| aiComponent_TEXCOORDS
             | aiComponent_BONEWEIGHTS 
             | aiComponent_ANIMATIONS
             | aiComponent_TEXTURES 
@@ -84,11 +85,12 @@ void AssimpMeshFile::calcTriangles()
   int nt = 0;
   getModelSizes(nd, nv, nt);
 
-  GLfloat * vList = new GLfloat[nv*3];
-  GLfloat * nList = new GLfloat[nv*3]; 
+  GLfloat * vList  = new GLfloat[nv*3];
+  GLfloat * vtList = new GLfloat[nv*2];
+  GLfloat * nList  = new GLfloat[nv*3]; 
   unsigned int * iList = new unsigned int[nt*3];
   
-  int vertexOffset = 0, indexOffset = 0;
+  int vertexOffset = 0, vertexTexOffset = 0, indexOffset = 0;
 
   printf("Reading %d Vertices...\n", nv);
   printf("Reading %d Triagnles...\n", nt);
@@ -96,7 +98,7 @@ void AssimpMeshFile::calcTriangles()
   struct aiMatrix4x4 transform;
   aiIdentityMatrix4(&transform);
 
-  createVbo(nd, vList, nList, iList, vertexOffset, indexOffset, &transform);
+  createVbo(nd, vList, nList, vtList, iList, vertexOffset, vertexTexOffset, indexOffset, &transform);
 
   cout << "BoundingBox Size:" << (m_bb_max - m_bb_min) ;
   cout << "BoundingBox Center:"<<((m_bb_max + m_bb_min)*.5) <<endl;
@@ -104,6 +106,7 @@ void AssimpMeshFile::calcTriangles()
   m_numVertices = nv;
   m_numTriangles = nt;
   m_vertices = vList;
+  m_texCoords = vtList;
   m_normals = nList;
   m_indexes = iList;
 
@@ -136,8 +139,8 @@ void AssimpMeshFile::getModelSizes(struct aiNode* nd, int &nVertices, int &nTria
 }
 
 
-void  AssimpMeshFile:: createVbo(struct aiNode* nd, GLfloat * vList, GLfloat * nList, 
-                                 unsigned int * iList, int &vertexOffset, int &indexOffset, struct aiMatrix4x4* transform)
+void  AssimpMeshFile::createVbo(struct aiNode* nd, GLfloat * vList, GLfloat * nList, GLfloat * vtList, 
+                                 unsigned int * iList, int &vertexOffset, int &vertexTexOffset, int &indexOffset, struct aiMatrix4x4* transform)
 {
   struct aiMatrix4x4 prev;
   prev = *transform;
@@ -164,9 +167,12 @@ void  AssimpMeshFile:: createVbo(struct aiNode* nd, GLfloat * vList, GLfloat * n
       struct aiVector3D normal = mesh->mNormals[i];
       aiTransformVecByMatrix4(&normal,&inv);
 
-      nList[vertexOffset + i*3] =  normal.x;
-      nList[vertexOffset + i*3+1] = normal.y;
-      nList[vertexOffset + i*3+2] = normal.z;
+      if ( mesh->HasTextureCoords(0) ) {
+        m_hasTexCoords = true;
+        struct aiVector3D coord = mesh->mTextureCoords[0][i];
+        vtList[vertexTexOffset + i*2] = coord.x;
+        vtList[vertexTexOffset + i*2+1] = coord.y;
+      }
 
       m_bb_min.x =min(vList[vertexOffset + i*3]  , m_bb_min.x);
       m_bb_min.y = min(vList[vertexOffset + i*3+1], m_bb_min.y);
@@ -182,8 +188,7 @@ void  AssimpMeshFile:: createVbo(struct aiNode* nd, GLfloat * vList, GLfloat * n
       const struct aiFace* face = &mesh->mFaces[t];
       GLenum face_mode;
 
-      if(face->mNumIndices != 3)
-      {
+      if(face->mNumIndices != 3) {
         MyAssert("ONLY TRIANGLES ACCPTED!", false);
       }
 
@@ -192,13 +197,13 @@ void  AssimpMeshFile:: createVbo(struct aiNode* nd, GLfloat * vList, GLfloat * n
         iList[indexOffset + t*3+i] = vertexOffset/3 + index;
       }
     }
-    vertexOffset += mesh->mNumVertices*3;
-    indexOffset += mesh->mNumFaces*3;
+    vertexOffset    += mesh->mNumVertices*3;
+    vertexTexOffset += mesh->mNumVertices*2;
+    indexOffset     += mesh->mNumFaces*3;
   }
   
-  for(int i = 0; i < nd->mNumChildren; ++i)
-  {
-    createVbo(nd->mChildren[i], vList, nList, iList, vertexOffset, indexOffset, transform);
+  for(int i = 0; i < nd->mNumChildren; ++i) {
+    createVbo(nd->mChildren[i], vList, nList, vtList, iList, vertexOffset, vertexTexOffset, indexOffset, transform);
   }
   *transform = prev;
 }

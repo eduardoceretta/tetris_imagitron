@@ -68,6 +68,8 @@ class AssimpMeshFile : public MeshFileBase
    */
   const struct aiScene *m_aiscene;
 
+  bool m_hasTexCoords;
+
 public:
   /**
    * Simple Constructor
@@ -104,7 +106,7 @@ protected:
   /**
    * Recursive function that read the aiNode struct and fill the VBO arrays
    */
-  void createVbo(struct aiNode* nd, GLfloat * vList, GLfloat * nList, unsigned int * iList, int &vertexOffset, int &indexOffset, struct aiMatrix4x4* trafo);
+  void createVbo(struct aiNode* nd, GLfloat * vList, GLfloat * nList, GLfloat * vtList, unsigned int * iList, int &vertexOffset, int &vertexTexOffset, int &indexOffset, struct aiMatrix4x4* trafo);
   
   /**
    * Recursive function that read the aiNode struct and count the number of vertexes and triangles
