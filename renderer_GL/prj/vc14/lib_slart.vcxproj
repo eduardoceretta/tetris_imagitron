@@ -108,6 +108,7 @@
     <ClCompile Include="..\..\src\ScScene\ScMesh.cpp" />
     <ClCompile Include="..\..\src\ScScene\ScScene.cpp" />
     <ClCompile Include="..\..\src\ScScene\ScTetrisImagitronFile.cpp" />
+    <ClCompile Include="..\..\src\ScScene\ScTexture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\defines.h" />
@@ -155,6 +156,7 @@
     <ClInclude Include="..\..\src\ScScene\ScMesh.h" />
     <ClInclude Include="..\..\src\ScScene\ScScene.h" />
     <ClInclude Include="..\..\src\ScScene\ScTetrisImagitronFile.h" />
+    <ClInclude Include="..\..\src\ScScene\ScTexture.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

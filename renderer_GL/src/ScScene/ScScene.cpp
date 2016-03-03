@@ -77,6 +77,12 @@ void ScScene :: configure()
     meshIt->configure();
   }
 
+  vector<ScTexture> ::iterator textIt;
+  for (textIt = m_textures.begin(); textIt != m_textures.end(); ++textIt)
+  {
+    textIt->configure();
+  }
+
   vector<ScAnimMesh*> :: iterator animMeshIt;
   for( animMeshIt = m_animMeshes.begin(); animMeshIt!=m_animMeshes.end(); ++animMeshIt)
   {
@@ -156,11 +162,21 @@ int ScScene::getNumLights()
   return m_lights.size();
 }
 
-
-
 ScLight* ScScene::getLightAt( int i )
 {
   return &m_lights[i];
+}
+
+
+
+int ScScene::getNumTextures()
+{
+  return m_textures.size();
+}
+
+ScTexture* ScScene::getTextureAt(int i)
+{
+  return &m_textures[i];
 }
 
 void ScScene::setLightActive( bool op )
@@ -404,6 +420,7 @@ void ScScene::readSceneObjects( string rt4FileName )
 
   int numCameras = 0;
   int numMaterials = 0;
+  int numTextures = 0;
   int numMeshes = 0;
   int numAnimMeshes = 0;
   int numTetrisFiles = 0;
@@ -437,6 +454,15 @@ void ScScene::readSceneObjects( string rt4FileName )
       ScMaterial m;
       m.readFromStr(buffer);
       m_materials.push_back(m);
+    }
+    else if (!strcmp(buffer, "TEXTURE"))
+    {
+      numTextures++;
+      fscanf(file, "%[^\n]s", buffer);
+
+      ScTexture m;
+      m.readFromStr(buffer);
+      m_textures.push_back(m);
     }else if(!strcmp(buffer, "LIGHT"))
     {
       numLights++;

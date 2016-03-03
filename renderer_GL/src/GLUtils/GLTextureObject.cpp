@@ -337,7 +337,7 @@ void GLTextureObject::setWraps( GLfloat sWrap, GLfloat tWrap)
 
 void GLTextureObject::createFBODataTexture(int width, int height)
 {
-  createTexture2D(width, height, GL_RGBA32F_ARB, GL_RGBA, GL_FLOAT);
+  m_id = createTexture2D(width, height, GL_RGBA32F_ARB, GL_RGBA, GL_FLOAT);
   setFilters(GL_NEAREST, GL_NEAREST);
   setWraps(GL_CLAMP_TO_EDGE,GL_CLAMP_TO_EDGE);
 }

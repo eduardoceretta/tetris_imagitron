@@ -18,6 +18,7 @@
 #include "ScScene/ScLight.h"
 #include "ScScene/ScMesh.h"
 #include "ScScene/ScMaterial.h"
+#include "ScScene/ScTexture.h"
 #include "ScScene/ScAnimMesh.h"
 #include "ScScene/ScTetrisImagitronFile.h"
 
@@ -62,6 +63,11 @@ protected:
    * Materials Array
    */
   vector<ScMaterial> m_materials;
+
+  /**
+  * Textures Array
+  */
+  vector<ScTexture> m_textures;
 
   /**
    * Lights Array
@@ -133,6 +139,16 @@ public:
    * Get the ith Light imported
    */
   ScLight* getLightAt(int i);
+
+  /**
+  * Get the number of imported textures
+  */
+  int getNumTextures();
+
+  /**
+  * Get the ith texture imported
+  */
+  ScTexture* getTextureAt(int i);
 
   /**
    * Get the number of imported meshes
