@@ -16,6 +16,8 @@ MATERIAL   .8 .5 .4     .8 .8 .8        32.0           0.0            0.8       
 //LIGHT (pos)x y z (dif)r g b (spec)r g b [type]{Dir=0 Pnt=1 Spt=2} [spotExponent] [spotAngle] [spotDir] x y z
 //LIGHT  .25 .5 .83   .85 .85 .85   .5 .5 .5
 LIGHT  400 100 10   1 1 1   0 0 0
+//TEXTURE MINFILTER MAGFILTER WRAPS WRAPT FILENAME
+TEXTURE LINEAR LINEAR REPEAT REPEAT resources/Textures/piece_bw.png
 
 
 //MESH materialIndex (pos)x y z (scale)x y z  path
@@ -23,7 +25,12 @@ LIGHT  400 100 10   1 1 1   0 0 0
 // MESH 1  0 0 0  1 1 1 resources\Models\TetrisImagitron\piece_O.obj
 ////////////////////////TIA TIA TIA TIA//////////////////////////
 // TETRISFILE  0 0 0  1 1 1 resources/Models/TetrisImagitron/kine.tia
-TETRISFILE  0 0 0  1 1 1 resources/Models/TetrisImagitron/kine2.tia
+// TETRISFILE  0 0 0  1 1 1 resources/Models/TetrisImagitron/kine_mini.tia
+// TETRISFILE  0 0 0  1 1 1 resources/Models/TetrisImagitron/kine_micro.tia
+// TETRISFILE  0 0 0  1 1 1 resources/Models/TetrisImagitron/debug.tia
+// TETRISFILE  0 0 0  1 1 1 resources/Models/TetrisImagitron/test_mini.tia
+// TETRISFILE  0 0 0  1 1 1 resources/Models/TetrisImagitron/booking_mini.tia
+TETRISFILE  0 0 0  1 1 1 resources/Models/TetrisImagitron/debug2.tia
 
 ////////////////////////UM UM UM UM//////////////////////////
 ////////////////////////UM UM UM UM//////////////////////////
