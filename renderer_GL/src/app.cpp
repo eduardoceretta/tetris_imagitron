@@ -132,9 +132,13 @@ void App::initGL(int *argc, char *argv[])
   //Disables cursor
   //glutSetCursor(GLUT_CURSOR_NONE);
 
+  m_opengl_version_str = glGetString(GL_VERSION);
+  sscanf((char*)m_opengl_version_str, "%f", &m_opengl_version);
+  cout << "GL Version: " <<  string((char*)m_opengl_version_str)<<endl;
+
   m_shader_version_str = glGetString(GL_SHADING_LANGUAGE_VERSION);
   sscanf((char*)m_shader_version_str, "%f", &m_shader_version);
-  cout << "GLSL Version: " <<  string((char*)m_shader_version_str)<<endl;
+  cout << "GLSL Version: " << string((char*)m_shader_version_str) << endl;
 
   PrintGLErrorFunction();
 }
@@ -160,7 +164,12 @@ void App::render()
   m_frames->update();
   m_camHandler->setMinerLightOn(false);
   m_camHandler->render();
-  
+ 
+  glPushAttrib(GL_ENABLE_BIT | GL_TEXTURE_BIT | GL_CURRENT_BIT);
+
+  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+  m_rtScene->getTextureAt(0)->render();
+
   if(m_debugrender_on)
   {
     glMatrixMode (GL_PROJECTION);
@@ -191,6 +200,9 @@ void App::render()
       break;
     }
   }
+
+  glBindTexture(GL_TEXTURE_2D, 0);
+  glPopAttrib();
 
   renderGUI();
   PrintGLErrorFunction();

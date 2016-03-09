@@ -68,7 +68,9 @@ class App
   float m_fov;
   GLfloat m_clearColor[4];
   GLfloat m_ambientColor[4];
+  const GLubyte* m_opengl_version_str;
   const GLubyte* m_shader_version_str;
+  float m_opengl_version;
   float m_shader_version;
 
   /**
