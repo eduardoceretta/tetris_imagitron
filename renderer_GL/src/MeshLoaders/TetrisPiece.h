@@ -84,8 +84,6 @@ public:
   Vector3 getBoundingBoxCenter() const;
   Vector3 getBoundingBoxMin() const;
   Vector3 getBoundingBoxMax() const;
-  
-//protected:
     
   /**
    * Process Piece Type and Rotation
