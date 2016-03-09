@@ -223,7 +223,15 @@ void ScTetrisImagitronFile::renderMovingPiecePos(int i) const
     glRotatef(90 * m_pieceNumRotations, 0,0,-1);
     glRotatef(p.getRotation(), 0,0,-1);
     glTranslatef(-p_local_center.x, -p_local_center.y, -p_local_center.z);
-    p.getVbo()->render();
+
+    glMatrixMode(GL_TEXTURE);
+      glPushMatrix();
+        glRotatef(90 * m_pieceNumRotations, 0, 0, -1);
+        glRotatef(p.getRotation(), 0, 0, -1);
+    
+          p.getVbo()->render();
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
   glPopMatrix();
 }
 
@@ -238,7 +246,15 @@ void ScTetrisImagitronFile::renderPieceFinalPos(int i) const
   glPushMatrix();
     glTranslatef(p_pos.x, p_pos.y, p_pos.z);
     glRotatef(p.getRotation(), 0,0,-1);
-    p.getVbo()->render();
+
+  glMatrixMode(GL_TEXTURE);
+    glPushMatrix();
+      glRotatef(p.getRotation(), 0, 0, -1);
+
+      p.getVbo()->render();
+    glPopMatrix();
+  
+    glMatrixMode(GL_MODELVIEW);
   glPopMatrix();
 }
 
